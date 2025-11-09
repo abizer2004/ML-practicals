@@ -1,0 +1,128 @@
+Got it—here’s a clear, line-by-line walkthrough of your script, grouped by logical blocks so it’s easy to follow.
+
+# 1) Notebook header & imports
+
+* The header comments just record that this file was exported from Colab and the original notebook link. 
+* `import os, pandas as pd, numpy as np, matplotlib.pyplot as plt, seaborn as sns` — bring in OS utilities, data wrangling (Pandas), numerics (NumPy), and plotting libs (Matplotlib, Seaborn). 
+* From scikit-learn:
+
+  * `train_test_split` to make train/test sets,
+  * `StandardScaler` for feature scaling,
+  * `LinearRegression, Ridge, Lasso` for three regression models,
+  * `mean_squared_error, r2_score` for evaluation. 
+
+# 2) Load and quick inspect
+
+* `df = pd.read_csv("/content/uber.csv")` — load the Uber dataset from the given path. (In Colab this points to your runtime’s `/content`.) 
+* `display(df.head())` — show first rows to eyeball columns/values.
+* `df.info()` — dtypes, non-null counts.
+* `print("\nColumns:", list(df.columns))` — explicit list of column names.
+* `print("\nMissing values per column:\n", df.isnull().sum())` — null counts per column. 
+
+# 3) Basic column cleanup & essential row filtering
+
+* `df = df.drop(columns=['Unnamed: 0', 'key'], errors='ignore')` — drop likely redundant index/key columns if present; don’t error if missing. 
+* Filter out rows with missing critical fields:
+
+  * If `pickup_datetime` exists: keep only non-null rows.
+  * If `fare_amount` exists: keep only non-null rows.
+    These lines guard with `if 'col' in df.columns` to avoid KeyErrors. 
+* Print shape after drops and display a fresh head to confirm. 
+
+# 4) Time feature engineering (if timestamp exists)
+
+* Convert `pickup_datetime` to pandas datetime with `errors='coerce'`, then drop rows where parsing failed.
+* Reset index and create calendar features: `hour, day, month, year, dayofweek`.
+* Else branch warns if timestamp column isn’t available.
+* Display a sample of the new time columns. 
+
+# 5) Numeric imputation & passenger cleanup
+
+* `numeric_cols = df.select_dtypes(include=[np.number]).columns.tolist()` — identify numeric columns.
+* For each numeric column, fill missing values with the median (printing how many were filled).
+* If `passenger_count` exists: fill NA with 1, cast to `int`, and clip to the plausible range `[1,6]`.
+* If `fare_amount` exists: drop non-positive fares as invalid.
+* Reset index and print shape after this imputation/cleaning. 
+
+# 6) IQR outlier clipping helper & application
+
+* Define `iqr_clip(series)` — compute Q1/Q3, IQR, and clip values to `[Q1-1.5*IQR, Q3+1.5*IQR]`. 
+* Build `cols_to_treat` from a candidate list, keeping only columns that actually exist in the DataFrame.
+* Apply `iqr_clip` to each selected column.
+* Plot per-column boxplots after clipping for a quick visual sanity check (`subplots=True`, grid layout, `tight_layout()`). 
+
+# 7) Distance feature via Haversine
+
+* Try to import `haversine` as `hs`; if unavailable, run `!pip install -q haversine` (Colab/Notebook magic) and import again.
+
+  * Note: `!pip` is a notebook shell escape; in a plain `.py` this line would fail—keep it in notebooks. 
+* Define `haversine_km(row)` — builds `(lat, lon)` tuples from pickup & dropoff, returns great-circle distance in km using `hs.haversine`. Returns `NaN` on exception. 
+* Ensure all four geo columns exist; if yes:
+
+  * `df['dist_travel_km'] = df.apply(haversine_km, axis=1)` — compute distance per row.
+  * Drop rows where distance is `NaN`.
+    Else: raise `KeyError` because distance is essential downstream. 
+* Filter to plausible rides: keep `0.1 ≤ dist_travel_km ≤ 200`. Show shape and a small sample of coordinates + distance.
+* Sanity-check coordinates: keep only rows with lat ∈ [−90,90], lon ∈ [−180,180]. Print shape again. 
+
+# 8) Correlation inspection
+
+* Build `num = df.select_dtypes(include=[np.number])`.
+* Plot a heatmap of numeric correlations (`sns.heatmap(..., annot=True, fmt=".2f", cmap='coolwarm')`).
+* If `fare_amount` exists, print the top absolute correlations with the target to see which features matter most. 
+
+# 9) Feature selection, target, and preview
+
+* Start with `candidates = [...]` (geo coords, passenger_count, time features, and `dist_travel_km`), keep only those present → `feature_cols`.
+* Ensure target exists: raise `KeyError` if `fare_amount` missing.
+* `X = df[feature_cols].copy()` and `y = df['fare_amount'].copy()` define features and target.
+* Print which features are used and shapes; `display(X.head())` to peek. 
+
+# 10) Train/test split & scaling
+
+* `train_test_split(..., test_size=0.20, random_state=42)` — 80/20 split (reproducible).
+* Fit `StandardScaler` on train features, transform train and test; wrap back into DataFrames with the same columns and indices. `display(X_train_scaled.head())` to confirm.
+
+  * Scaling keeps models (especially Ridge/Lasso) well-behaved by normalizing magnitudes. 
+
+# 11) Model dictionary & training loop
+
+* Define three models in a dict:
+
+  * Ordinary Least Squares: `LinearRegression()`
+  * L2-regularized: `Ridge(alpha=1.0, random_state=42)`
+  * L1-regularized: `Lasso(alpha=0.1, random_state=42, max_iter=5000)` (higher `max_iter` for convergence). 
+* For each model:
+
+  * `fit` on scaled train data,
+  * `predict` on scaled test,
+  * compute `mse`, `rmse = sqrt(mse)`, and `r2`,
+  * append a results row, and print quick diagnostics (including first eight predictions vs actuals). 
+
+# 12) Results table & best model
+
+* `results_df = pd.DataFrame(results).sort_values('r2', ascending=False)` — rank models by (R^2).
+* `display(results_df)` — view the scoreboard.
+* `best_model_name = results_df.loc[0,'model']` — pick the top (R^2) model name.
+* `best_model = models[best_model_name]` — retrieve the already-fitted estimator.
+* `y_pred_best = best_model.predict(X_test_scaled)` — predictions from the winner.
+* `residuals = y_test - y_pred_best` — residual analysis setup. 
+
+# 13) Residual diagnostics
+
+* Create a 1×2 figure:
+
+  * Left: Residuals vs Predicted scatter with a horizontal zero line — checks heteroscedasticity, nonlinearity, and outliers.
+  * Right: Residuals histogram with KDE — checks (approximate) normality and spread.
+* `plt.tight_layout()` and `plt.show()` render the plots. 
+
+---
+
+### TL;DR What the pipeline does
+
+1. Clean & engineer features (timestamp parts, Haversine distance).
+2. Remove obvious errors/outliers (IQR clipping, coordinate and distance sanity checks).
+3. Split, scale, and train three linear models (OLS, Ridge, Lasso).
+4. Compare with (R^2)/RMSE and plot residuals for the best model. 
+
+If you want, I can generate a neat PDF explanation (like before) tailored to this exact script—just say the word.

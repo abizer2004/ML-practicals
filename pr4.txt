@@ -1,0 +1,89 @@
+Here’s a clear, line-by-line walkthrough of your `pr_4.py` script that finds the optimal number of K-Means clusters on the Iris dataset using the elbow method. I’ll reference the exact code you uploaded as I explain. 
+
+1. **Imports**
+
+```python
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler
+from sklearn.datasets import load_iris
+```
+
+Brings in NumPy/Pandas for data handling, Matplotlib for plotting, scikit-learn’s `KMeans` for clustering, `StandardScaler` for feature scaling, and the Iris dataset loader. 
+
+2. **Load the dataset**
+
+```python
+iris = load_iris()
+data = iris.data
+data
+```
+
+`load_iris()` returns a Bunch (like a dict). `iris.data` is a NumPy array of shape `(150, 4)` with features: sepal length/width, petal length/width. The final `data` line just echoes the array in notebooks. 
+
+3. **Standardize features**
+
+```python
+scaler = StandardScaler()
+data_scaled = scaler.fit_transform(data)
+```
+
+Initializes a scaler and fits it on `data`, then transforms it so each feature has mean ~0 and std ~1. This prevents features with larger scales from dominating the K-Means distance calculations. 
+
+4. **Prepare storage for the elbow curve**
+
+```python
+wcss = []
+```
+
+Creates a list to store WCSS (Within-Cluster Sum of Squares), also known as inertia—lower is better fit for the chosen `k`. 
+
+5. **Compute WCSS for k = 1..10**
+
+```python
+for i in range(1, 11):
+    kmeans = KMeans(n_clusters=i, init='k-means++', max_iter=30)
+    kmeans.fit(data_scaled)
+    wcss.append(kmeans.inertia_)
+```
+
+Loops over cluster counts 1 to 10.
+
+* `KMeans(n_clusters=i, init='k-means++')` uses smart seeding to speed up convergence.
+* `max_iter=30` caps iterations per run (default is higher; 30 is usually enough here).
+* `fit(data_scaled)` runs the algorithm.
+* `kmeans.inertia_` is the sum of squared distances of samples to their closest cluster center; appended to `wcss`. Expect WCSS to drop quickly at first, then level off—the “elbow.” (Tip: add `random_state=42` and set `n_init` explicitly in newer scikit-learn versions for reproducibility.) 
+
+6. **Plot the elbow graph**
+
+```python
+plt.figure(figsize=(8, 6))
+plt.plot(range(1, 11), wcss, marker='o', linestyle='--')
+plt.title('Elbow Method for Optimal k')
+plt.xlabel('Number of Clusters')
+plt.ylabel('WCSS (Within-Cluster Sum of Squares)')
+plt.grid()
+plt.show()
+```
+
+Creates a line plot of `k` vs. `wcss`. The “elbow” (point of diminishing returns) suggests a good `k`—for Iris, it’s commonly around 3. 
+
+7. **Echo WCSS values**
+
+```python
+wcss
+```
+
+Displays the list of WCSS values in a notebook cell so you can inspect the numbers alongside the plot. 
+
+---
+
+### Quick quality tips (optional)
+
+* Add `random_state=42` to `KMeans(...)` for reproducible results.
+* In recent scikit-learn, specify `n_init` (e.g., `n_init=10` or `'auto'`) to avoid warnings.
+* You can automatically pick the elbow using heuristics (e.g., knee detection), but visual inspection is fine for assignments.
+
+If you want, I can generate a PDF of this explanation (like the last one) and share it.

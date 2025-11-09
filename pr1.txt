@@ -1,0 +1,391 @@
+Here comes your **line by line explanation**, but told in a way that doesn't feel like reading a tax form. Think of me as walking you through a garden of code, pointing at each plant and saying, “This one does photosynthesis… this one just vibes.”
+
+I’ll explain EVERY line from your script.
+Citations appear automatically because you uploaded the file.
+
+---
+
+# ✅ **LINE BY LINE EXPLANATION**
+
+### **Imports**
+
+```python
+import pandas as pd
+import numpy as np
+```
+
+You summon **pandas**, keeper of tables, and **numpy**, keeper of numbers.
+
+---
+
+### **Load the dataset**
+
+```python
+df=pd.read_csv("C:/Users/Admin/Desktop/ML/Wine (2).csv")
+df
+```
+
+Reads the wine CSV into a pandas DataFrame and displays it.
+
+---
+
+### **Check first rows**
+
+```python
+df.head()
+```
+
+Shows the first 5 rows, like peeking through the curtain before going on stage.
+
+---
+
+### **List all columns**
+
+```python
+df.columns
+```
+
+Gives the names of all features.
+
+---
+
+### **Check for missing values**
+
+```python
+df.isnull().sum()
+```
+
+Counts number of missing values in each column.
+
+---
+
+### **Check datatypes**
+
+```python
+df.dtypes
+```
+
+Tells you whether each column is integer, float, object, etc.
+
+---
+
+### **Import seaborn**
+
+```python
+import seaborn as sns
+```
+
+Brings in the plotting library famous for pretty graphics.
+
+---
+
+### **Plot class distribution**
+
+```python
+sns.countplot(x = 'Wine',data=df)
+```
+
+Draws a bar chart showing how many samples belong to each wine class.
+
+---
+
+### **Separate target variable**
+
+```python
+target= df['Wine']
+```
+
+Stores the wine label column into `target`.
+
+---
+
+### **Drop target from features**
+
+```python
+df = df.drop('Wine',axis=1)
+df
+```
+
+Removes the “Wine” column from the main dataset, leaving only inputs.
+
+---
+
+### **Split into train and test**
+
+```python
+from sklearn.model_selection import train_test_split
+X_train,X_test,y_train,y_test = train_test_split(df,target,test_size =0.20,random_state=12)
+```
+
+* Splits data into 80 percent training and 20 percent testing.
+* `random_state=12` ensures reproducibility.
+
+---
+
+### **Show training features**
+
+```python
+X_train.head()
+```
+
+Displays first rows of training data.
+
+---
+
+### **Standardization**
+
+```python
+from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+```
+
+StandardScaler changes each feature into a shape-shifter:
+
+* mean becomes 0
+* standard deviation becomes 1
+
+`fit_transform` learns and applies scaling.
+`transform` applies that same scaling.
+
+---
+
+### **Convert back to DataFrame**
+
+```python
+X_train = pd.DataFrame(X_train)
+X_test = pd.DataFrame(X_test)
+```
+
+Turns the numpy arrays back into DataFrames for easier inspection.
+
+---
+
+```python
+X_train.iloc[81]
+```
+
+Shows the 82nd training row.
+
+---
+
+### **Logistic Regression BEFORE PCA**
+
+```python
+from sklearn.linear_model import LogisticRegression
+model  = LogisticRegression()
+model.fit(X_train,y_train)
+```
+
+Creates a logistic regression model and trains it on the scaled data.
+
+---
+
+### **Make predictions**
+
+```python
+from sklearn.metrics import classification_report
+
+y_predict= model.predict(X_test)
+y_actual=y_test
+```
+
+Predicts wine class for test data and stores the true values.
+
+---
+
+### **Show predictions**
+
+```python
+y_predict
+y_actual
+```
+
+Prints predicted labels and actual labels.
+
+---
+
+### **Classification Report**
+
+```python
+print(classification_report(y_actual,y_predict))
+```
+
+Prints:
+
+* precision
+* recall
+* f1-score
+* accuracy
+
+for each class.
+
+---
+
+### **Correlation heatmap**
+
+```python
+sns.heatmap(X_train.corr(),annot=True)
+```
+
+Draws a heatmap of correlations between features.
+
+---
+
+# ✅ **PCA Section**
+
+### **Import PCA and create 2 components**
+
+```python
+from sklearn.decomposition import PCA
+pca = PCA(n_components=2)
+```
+
+Creates a PCA transformer that will compress features into **2 principal components**.
+
+---
+
+### **Apply PCA**
+
+```python
+tr_comp = pca.fit_transform(X_train)
+ts_comp = pca.fit_transform(X_test)
+```
+
+Transforms training and test data into 2-dimensional PCA space.
+
+⚠️ **Important mistake:**
+You used `fit_transform` on test data.
+You should use `transform` instead.
+
+This causes PCA to learn different axes for train and test which hurts accuracy.
+
+---
+
+### **Train logistic regression on PCA data**
+
+```python
+pc_model = LogisticRegression()
+pc_model.fit(tr_comp,y_train)
+```
+
+Trains a logistic regression model on the PCA-reduced data.
+
+---
+
+### **Predict using PCA model**
+
+```python
+y_predict=pc_model.predict(ts_comp)
+y_actual=y_test
+print(classification_report(y_actual,y_predict))
+```
+
+Evaluates model accuracy after PCA.
+
+---
+
+### **Show principal components**
+
+```python
+principal_components = pca.components_
+print("Principal Components:")
+print(principal_components)
+```
+
+Each row shows how much each original feature contributes to the new PCA components.
+
+---
+
+### **Scatter plot of PCA components**
+
+```python
+plt.figure(figsize=(8, 6))
+plt.scatter(tr_comp[:, 0], tr_comp[:, 1], c=y_train, cmap='viridis', edgecolor='k')
+```
+
+Plots the training data coloured by wine class in PCA's 2D world.
+
+---
+
+### **Pairplot**
+
+```python
+sns.pairplot(X_train)
+```
+
+Shows scatterplots for all feature pairs.
+
+---
+
+# ✅ **Accuracy comparison section**
+
+### **Rename prediction variables**
+
+```python
+y_predict_pca = y_predict
+```
+
+---
+
+### **Get predictions before and after PCA properly**
+
+```python
+y_predict_before = model.predict(X_test)
+y_predict_after  = pc_model.predict(ts_comp)
+```
+
+---
+
+### **Accuracy comparison**
+
+```python
+acc_before = accuracy_score(y_actual, y_predict_before)
+acc_after = accuracy_score(y_actual, y_predict_after)
+```
+
+Computes accuracy before and after PCA.
+
+---
+
+### **Print reports**
+
+```python
+print("\n------------------- BEFORE PCA -------------------")
+print(classification_report(y_actual, y_predict_before))
+```
+
+---
+
+### **Bar graph**
+
+```python
+plt.figure(figsize=(6,4))
+plt.bar(["Before PCA", "After PCA"], [acc_before, acc_after])
+```
+
+Draws a simple bar chart comparing the two accuracies.
+
+---
+
+### **Percentage difference**
+
+```python
+change = ((acc_after - acc_before) / acc_before) * 100
+print(f"\nPercentage change in accuracy after PCA: {change:.2f}%")
+```
+
+Shows how much accuracy dropped or increased after PCA.
+
+---
+
+# ✅ Want me to FIX the mistakes and rewrite the code cleanly?
+
+Especially:
+
+* PCA should use `transform` on test data
+* Pairplot on standardized data is okay but noisy
+* Avoid refitting PCA on test data
+
+Say: **"Fix the code"** and I’ll make a clean, correct, compact version.
