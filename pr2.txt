@@ -126,3 +126,136 @@ Got it—here’s a clear, line-by-line walkthrough of your script, grouped by l
 4. Compare with (R^2)/RMSE and plot residuals for the best model. 
 
 If you want, I can generate a neat PDF explanation (like before) tailored to this exact script—just say the word.
+
+
+Got you. I’ll give you a **concise, practical-exam-ready algorithm** that matches **exactly the uploaded code (ml_pr2_(1).py)** and the PDF problem statement (Assignment 2A: Linear Regression).
+
+This version is short, clean, and fits perfectly into your journal.
+
+---
+
+# ✅ **Algorithm (According to Given Code & Problem Statement)**
+
+### *Assignment 2A: Implement Linear Regression Using Python (Uber Dataset)*
+
+1. **Load Dataset**
+   Import required libraries and read the Uber CSV file using Pandas.
+
+2. **Initial Data Inspection**
+   Display first rows, check info, column names, and missing values.
+
+3. **Data Cleaning**
+   Drop irrelevant columns (`Unnamed: 0`, `key`), remove rows with missing `pickup_datetime` or `fare_amount`.
+
+4. **Feature Engineering**
+   Convert `pickup_datetime` to datetime and extract new time-based features:
+   hour, day, month, year, dayofweek.
+
+5. **Handle Missing Values**
+   Identify numeric columns and fill missing values with median.
+
+6. **Outlier Treatment**
+   Apply IQR clipping on selected numeric features (fare, passenger count, coordinates, distance).
+
+7. **Distance Calculation**
+   Use Haversine formula to compute trip distance in kilometers and filter invalid values.
+
+8. **Correlation Check**
+   Plot heatmap and identify features highly correlated with `fare_amount`.
+
+9. **Prepare Features and Target**
+   Select important columns as predictors (X) and set `fare_amount` as target (y).
+
+10. **Train Test Split**
+    Split dataset into training and testing sets (80:20).
+
+11. **Feature Scaling**
+    Standardize training and test data using `StandardScaler`.
+
+12. **Apply Regression Models**
+    Train three models:
+    Linear Regression, Ridge Regression, Lasso Regression.
+
+13. **Evaluate Models**
+    For each model, compute:
+    MSE, RMSE, and R² score using test data.
+
+14. **Select Best Model**
+    Compare R² scores and identify the best-performing model.
+
+15. **Residual Analysis**
+    Plot residuals and distribution for the best model.
+
+---
+
+If you want, I can also prepare:
+
+✅ Viva answers
+✅ Flowchart
+✅ Short theory
+✅ Conclusion
+
+Just tell me!
+
+Here’s a **simple, exam-friendly explanation** of **MSE, RMSE, and R²**, dressed in a light creative style but still crisp and clear.
+
+---
+
+# ✅ **MSE (Mean Squared Error)**
+
+Think of MSE as the **average squared distance** between the real values and the predicted values.
+It tells you **how wrong your model is**.
+
+Formula:
+MSE = average( (actual − predicted)² )
+
+Easy meaning:
+• Takes the error
+• Squares it (so negative errors don’t cancel)
+• Averages it
+• Lower MSE means better model.
+
+---
+
+# ✅ **RMSE (Root Mean Squared Error)**
+
+RMSE is just the **square root of MSE**.
+
+Why take the square root?
+Because it brings the error **back to the original unit** of the target variable.
+(If fare is in rupees, RMSE is also in rupees.)
+
+Meaning:
+• Easier to understand
+• Still punishes big errors
+• Lower RMSE = better predictions.
+
+---
+
+# ✅ **R² (Coefficient of Determination)**
+
+R² tells you **how well your model explains the data**.
+It’s like a score from 0 to 1.
+
+Meaning:
+• R² = 1 means perfect prediction.
+• R² = 0 means the model is as good as guessing the average.
+• Negative R² means the model is worse than guessing.
+
+You can also think of it like:
+R² = percentage of variation in the target that the model can explain.
+
+Example:
+R² = 0.85 → “Model explains 85 percent of the variation in fare amount.”
+
+---
+
+# ✅ **Ultra-short summary (for viva):**
+
+* **MSE**: Average of squared errors. Lower is better.
+* **RMSE**: Square root of MSE; error in original units.
+* **R²**: How well the model fits (0 to 1). Higher is better.
+
+---
+
+If you want, I can also explain **MAE**, **MAPE**, or when to use each metric.
