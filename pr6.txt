@@ -413,3 +413,187 @@ If you want, I can also:
 ✅ Rewrite the code into a **clean structured version** (no duplicates)
 
 Just tell me!
+
+Here is a **short, clean, exam-ready algorithm** for **Assignment 6A: Reinforcement Learning (Q-Learning Maze Solver)**, written **exactly according to your code (ml_pr6.py)** and matching the PDF problem statement.
+
+Perfect to write in your practical journal or answer during viva.
+
+---
+
+# ✅ **Algorithm (According to Given Code & Problem Statement)**
+
+### *Assignment 6A: Reinforcement Learning – Maze Exploration using Q-Learning*
+
+1. **Initialize the Maze Environment**
+
+   * Define a 2D grid where:
+     0 = free cell,
+     1 = wall,
+     and set the start and goal positions.
+   * Store maze as a NumPy array.
+
+2. **Define Actions**
+
+   * Possible actions: Up, Down, Left, Right.
+
+3. **Initialize Q-Table**
+
+   * Create a Q-table of shape `(rows, columns, number_of_actions)` and set all values to zero.
+
+4. **Set Hyperparameters**
+
+   * Learning rate (α), discount factor (γ), exploration rate (ε), minimum ε, decay rate, number of episodes, and maximum steps per episode.
+
+5. **Implement Step Function**
+
+   * Given current state and an action:
+
+     * Check if move is valid.
+     * Return next state, reward, and whether the goal is reached.
+
+6. **Training Loop (Q-Learning)**
+   For each episode:
+   a. Set current state to start.
+   b. Choose an action using **epsilon-greedy** strategy.
+   c. Take the action and get next state + reward.
+   d. Update Q-value using the formula:
+
+   ```
+   Q[s][a] = Q[s][a] + α * (reward + γ * max(Q[next_state]) - Q[s][a])
+   ```
+
+   e. Move to next state.
+   f. If goal reached or max steps reached, stop the episode.
+   g. Decay epsilon to reduce exploration over time.
+
+7. **Generate Greedy Policy**
+
+   * For each cell, choose the action with highest Q-value and create a policy map.
+
+8. **Test the Agent**
+
+   * Start from the initial position.
+   * Always select the best Q-value action (exploit only).
+   * Record the path until goal is reached or a loop occurs.
+
+9. **Visualize Result**
+
+   * Plot maze grid.
+   * Mark start, goal, learned policy arrows, and final path traveled by the agent.
+
+---
+
+If you want, I can also prepare:
+
+✅ Viva questions and answers
+✅ Short theory for Q-Learning
+✅ Greedy policy interpretation
+✅ Explanation of hyperparameters (alpha, gamma, epsilon)
+
+Just tell me!
+
+Here’s a **clear, exam-friendly, easy-to-remember** explanation of **Reinforcement Learning**, **Q-Learning**, and **Hyperparameters**.
+No jargon bombs. Just clean and crisp.
+
+---
+
+# ✅ **What is Reinforcement Learning (RL)?**
+
+Reinforcement Learning is a type of machine learning where:
+
+* An **agent** learns by interacting with an **environment**.
+* It takes **actions**, gets **rewards**, and learns from its mistakes.
+* The goal is to learn a **policy** (best actions) to get maximum total reward.
+
+Think of RL like teaching a robot to escape a maze:
+It tries moves, gets punished for hitting walls, rewarded for reaching the goal, and learns a better path over time.
+
+✅ RL = Learning by **trial and error** using **rewards**.
+
+---
+
+# ✅ **What is Q-Learning?**
+
+Q-Learning is a famous Reinforcement Learning algorithm.
+
+It learns a table called the **Q-table**, where:
+
+* Each **state** (maze cell)
+* Each **action** (U, D, L, R)
+
+gets a score called the **Q-value**.
+
+Q-value means:
+**“How good is it to take this action from this state?”**
+
+### ✅ Q-Learning Update Rule
+
+```
+Q[state][action] = Q[state][action] 
+                   + α * (reward + γ * max(Q[next_state]) − Q[state][action])
+```
+
+Meaning:
+
+* Take action
+* See the reward
+* Look ahead at future best value
+* Update today's Q-value so tomorrow’s action improves
+
+✅ Q-Learning slowly discovers the **best path** to reach the goal.
+
+---
+
+# ✅ **What are Hyperparameters?**
+
+Hyperparameters are settings **chosen before training**.
+They control *how* the algorithm learns, not *what* it learns.
+
+In your RL code, the key hyperparameters are:
+
+### **1. Learning Rate (alpha, α)**
+
+How much the agent updates old knowledge with new knowledge.
+High α → learns fast but unstable
+Low α → learns slow but stable
+
+### **2. Discount Factor (gamma, γ)**
+
+How much future rewards matter.
+High γ → agent cares about long-term success
+Low γ → agent cares only about immediate rewards
+
+### **3. Epsilon (ε)**
+
+Exploration rate.
+
+* High ε → agent takes random moves (explores)
+* Low ε → agent follows learned Q-values (exploits)
+
+### **4. Episodes**
+
+How many times the agent trains from start to finish.
+
+### **5. Max steps per episode**
+
+How long the agent is allowed to try before failing.
+
+✅ Hyperparameters shape **speed**, **stability**, and **quality** of learning.
+
+---
+
+# ✅ **Ultra-short viva version**
+
+* **Reinforcement Learning:** Agent learns by trying actions and receiving rewards.
+* **Q-Learning:** RL algorithm that uses a Q-table to learn the best action for each state.
+* **Hyperparameters:** Pre-set learning controls like learning rate, discount factor, epsilon, episodes.
+
+---
+
+If you want, I can also give you:
+
+✅ A diagram-based explanation
+✅ One-line definitions
+✅ Real-life examples of RL and Q-learning
+
+Just tell me!
