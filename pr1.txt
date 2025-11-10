@@ -389,3 +389,128 @@ Especially:
 * Avoid refitting PCA on test data
 
 Say: **"Fix the code"** and I’ll make a clean, correct, compact version.
+
+Here is a **short, crisp, practical-exam friendly algorithm** that still matches your code and assignment.
+This is the version you can write in your journal or say during viva.
+
+---
+
+# ✅ **Concise Algorithm for PCA and Logistic Regression**
+
+1. **Load the Dataset**
+   Import libraries and read the Wine dataset using Pandas.
+
+2. **Preprocess Data**
+   Check missing values, separate target column, and drop it from features.
+
+3. **Split the Dataset**
+   Use `train_test_split()` to divide data into train and test sets.
+
+4. **Standardize Features**
+   Apply `StandardScaler` to normalize training and test data.
+
+5. **Train Logistic Regression (Before PCA)**
+   Fit Logistic Regression on scaled data and evaluate accuracy.
+
+6. **Apply PCA**
+   Create PCA with `n_components=2`, fit on training data, and transform both train and test sets.
+
+7. **Train Logistic Regression (After PCA)**
+   Fit Logistic Regression on PCA-transformed data and evaluate accuracy.
+
+8. **Compare Results**
+   Compare accuracy before and after PCA and visualize components through scatter plots.
+
+---
+
+If you want, I can also give a **4–5 line viva-style explanation** of PCA or the **shortest possible algorithm (5 steps)**.
+
+Here’s a **clear, exam-friendly explanation** of **why `n_components=2` is used in PCA** and **why specifically 2 components were chosen** in your code.
+
+---
+
+# ✅ **What does `n_components=2` mean?**
+
+In PCA:
+
+```
+pca = PCA(n_components=2)
+```
+
+means:
+
+👉 “Reduce the dataset to **2 principal components** (2 new features).”
+
+So instead of keeping all original features, PCA extracts **only the top 2 directions** where the data varies the most.
+
+---
+
+# ✅ **Why choose 2 components?**
+
+There are **two main reasons**, and both apply to your assignment code.
+
+---
+
+## ✅ **1. For Visualization (most important in your code)**
+
+With 2 components, you can plot the dataset in **a 2D scatter plot**.
+
+Your code includes:
+
+```
+plt.scatter(tr_comp[:,0], tr_comp[:,1], ...)
+```
+
+This is only possible when PCA reduces data to exactly **2 dimensions**.
+
+If `n_components` was 3 or more, you **cannot** easily visualize it on a simple 2D graph.
+
+✅ **Choosing 2 lets you see clusters visually.**
+✅ **It is standard practice for PCA + visualization tasks.**
+
+---
+
+## ✅ **2. The first 2 components capture MOST of the variance**
+
+PCA orders components from most important to least important:
+
+* **PC1** → captures the maximum variance
+* **PC2** → captures the next highest variance
+
+So the first 2 components often capture **70–95%** of the important patterns in the dataset.
+
+This makes dimensionality reduction effective while still keeping important information.
+
+✅ Fewer features
+✅ Less noise
+✅ Faster training
+✅ Good accuracy
+
+---
+
+# ✅ **So, why only 2?**
+
+### **Because your goal in the practical was:**
+
+✔ Reduce the dimensions
+✔ Show PCA results
+✔ Plot the data
+✔ Compare logistic regression performance before/after PCA
+
+Plotting needs **2 axes**, so **2 components** are chosen.
+
+---
+
+# ✅ **Ultra-short viva answer**
+
+**`n_components=2` reduces the dataset to the top 2 principal components. We choose 2 so that we can visualize the data in a 2D scatter plot while still retaining most of the important variance.**
+
+---
+
+If you want, I can also explain:
+
+✅ What happens if we choose 3 or more components
+✅ How much variance each component captures
+✅ Why PCA sometimes reduces accuracy
+
+Just tell me!
