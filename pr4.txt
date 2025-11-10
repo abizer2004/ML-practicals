@@ -87,3 +87,137 @@ Displays the list of WCSS values in a notebook cell so you can inspect the numbe
 * You can automatically pick the elbow using heuristics (e.g., knee detection), but visual inspection is fine for assignments.
 
 If you want, I can generate a PDF of this explanation (like the last one) and share it.
+
+Here is a **concise, exam-ready algorithm** for **Assignment 4A: K-Means Clustering & Elbow Method**, written **exactly according to your uploaded code (pr_4.py)** and matching the PDF problem statement.
+
+Short, clean, and perfect to write in your practical journal.
+
+---
+
+# ✅ **Algorithm (According to the Code & Problem Statement)**
+
+### *Assignment 4A: Clustering Analysis using K-Means on Iris Dataset*
+
+1. **Load Required Libraries**
+   Import NumPy, Pandas, Matplotlib, StandardScaler, KMeans, and load the Iris dataset.
+
+2. **Load the Dataset**
+   Load the Iris dataset using `load_iris()` and extract only the feature data.
+
+3. **Standardize the Data**
+   Use `StandardScaler()` to scale the feature values so that all features contribute equally.
+
+4. **Initialize WCSS List**
+   Create an empty list to store the Within-Cluster Sum of Squares (WCSS) values.
+
+5. **Apply Elbow Method**
+   For k = 1 to 10:
+
+   * Create a KMeans model with k clusters.
+   * Fit the model on the scaled data.
+   * Append the inertia (WCSS) to the list.
+
+6. **Plot Elbow Curve**
+   Plot number of clusters (k) vs WCSS to find the point where the curve bends (optimum k).
+
+7. **Output WCSS Values**
+   Display the WCSS list for reference.
+
+---
+
+If you want, I can also provide:
+
+✅ A short theory summary
+✅ Viva questions and answers
+✅ Conclusion for the journal
+
+Just tell me!
+
+
+Here’s a **simple, exam-friendly** explanation of **WCSS**, **Elbow Method**, and **Elbow Curve**. Clear, crisp, and perfect for viva or journal writing.
+
+---
+
+# ✅ **What is WCSS? (Within-Cluster Sum of Squares)**
+
+WCSS measures **how tightly the data points are grouped inside each cluster**.
+
+Think of it like this:
+
+* Each cluster has a **centroid** (center point).
+* For every point in the cluster, we measure:
+  **(distance from point to centroid)²**
+* Then we **add all those distances**.
+
+This total is **WCSS**.
+
+### ✅ Simple meaning:
+
+**Lower WCSS = points are close together = better cluster.**
+
+---
+
+# ✅ **What is the Elbow Method?**
+
+The Elbow Method is a technique used to find the **best number of clusters (k)** in K-Means.
+
+### How it works:
+
+1. Run K-means for k = 1 to 10.
+2. Calculate WCSS for each k.
+3. Plot WCSS vs. k.
+4. Look for a point where the WCSS **stops decreasing sharply**.
+
+That bending point looks like an **elbow**.
+
+### ✅ Simple meaning:
+
+**The Elbow Method helps choose the optimal number of clusters using the WCSS graph.**
+
+---
+
+# ✅ **What is the Elbow Curve?**
+
+The Elbow Curve is the **graph you get when you plot**:
+
+* X-axis → number of clusters (k)
+* Y-axis → WCSS values
+
+The graph usually slopes downward and then bends like an arm.
+
+Example curve shape:
+
+```
+WCSS
+ |
+ |\
+ | \
+ |  \
+ |   \__
+ |       \___
+ +-----------------
+        k
+```
+
+The **bend** (elbow) is where adding more clusters doesn’t improve the model much.
+
+### ✅ Simple meaning:
+
+**The elbow curve visually shows where the improvement slows down.
+That point tells you the best k.**
+
+---
+
+# ✅ **Ultra-short viva answers**
+
+* **WCSS**: Sum of squared distances between data points and their cluster’s centroid.
+* **Elbow Method**: Technique to find optimal cluster number by checking where WCSS drops slowly.
+* **Elbow Curve**: Graph of WCSS vs. k that shows a bend indicating the best number of clusters.
+
+---
+
+If you want, I can also give:
+
+✅ Diagram-based explanation
+✅ 2–3 line journal write-up
+✅ Elbow curve interpretation for your output
